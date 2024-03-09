@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useQuery, useMutation } from '@apollo/client';
 import { GET_PRODUCTS, ADD_PRODUCT, REMOVE_PRODUCT, PRODUCT_ADDED_SUBSCRIPTION } from '../graphql/operations';
 import { getAccessToken, signOut } from '../services/authService';
+import Markdown from 'markdown-to-jsx';
 
 interface Product {
   id: string;
@@ -124,7 +125,9 @@ const HomePage: React.FC = () => {
             <button className="btn btn-primary mt-4" onClick={generateIdea}>
             Generate a Brilliant Idea
           </button>
-          <div className="text-white mt-2">{generatedIdea}</div>
+          <div className="text-white mt-2" style={{ maxWidth: '100%', overflowX: 'auto' }}>
+            <Markdown>{generatedIdea}</Markdown> {/* Render generatedIdea as Markdown */}
+          </div>
           </div>
         </div>
       </div>
