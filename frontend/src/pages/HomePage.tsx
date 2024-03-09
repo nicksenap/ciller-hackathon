@@ -2,8 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { useQuery, useMutation } from '@apollo/client';
 import { GET_PRODUCTS, ADD_PRODUCT, REMOVE_PRODUCT, PRODUCT_ADDED_SUBSCRIPTION } from '../graphql/operations';
 import { getAccessToken, signOut } from '../services/authService';
-import { Box, Button, Checkbox, Container, FormControl, FormLabel, Heading, Input, Stack, Text } from "@chakra-ui/react";
-import { FaPlus, FaTrash } from "react-icons/fa";
 
 interface Product {
   id: string;
@@ -16,7 +14,6 @@ interface GetProductsQuery {
 
 const HomePage: React.FC = () => {
   const [newProductText, setNewProductText] = useState('');
-  const [pushToKafka, setPushToKafka] = useState(false);
   const { data, loading, error, subscribeToMore } = useQuery(GET_PRODUCTS);
   const [addProduct] = useMutation(ADD_PRODUCT);
   const [removeProduct] = useMutation(REMOVE_PRODUCT);
@@ -46,37 +43,19 @@ const HomePage: React.FC = () => {
   }, [subscribeToMore]);
 
   if (loading) return (
-    <div className="flex justify-center items-center min-h-screen bg-base-300">
-      <button className="btn">
-        <span className="loading loading-spinner"></span>
+    <div className="flex justify-center items-center min-h-screen bg-black">
+      <button className="btn text-2xl font-bold text-white">
         Loading...
       </button>
     </div>
   );
-  if (error) return <p>{'Error: ' + error}</p>;
+  if (error) return <p className="text-white">{'Error: ' + error}</p>;
 
   const handleAddProduct = async () => {
     if (!newProductText.trim()) return;
-    if (pushToKafka) {
-      const token = await getAccessToken();
-      const response = await fetch('/input/add_product', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': token ? `Bearer ${token}` : "",
-        },
-        body: JSON.stringify({ name: newProductText }),
-      });
-      if (response.ok) {
-        setNewProductText('');
-      } else {
-        const errorText = await response.text();
-        console.error('Failed to add product:', errorText);
-      }
-    } else {
-      await addProduct({ variables: { name: newProductText } });
-      setNewProductText('');
-    }
+    await addProduct({ variables: { name: newProductText } });
+    setNewProductText('');
+    
   };
 
   const handleRemoveProduct = async (id: string) => {
@@ -97,52 +76,39 @@ const HomePage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col">
-      <div className="navbar bg-base-300 text-neutral-content">
-        <div className="flex-1">
-          <a href="/" className="p-2 normal-case text-xl">Idea Master</a>
-        </div>
-        <div className="flex-none">
-          <button className="btn" onClick={signOut}>
-          Sign out
-          </button>
-        </div>
-      </div>
+    <div className="min-h-screen flex flex-col bg-black">
+      <nav className="bg-transparent text-white p-4 flex justify-between items-center">
+        <a href="/" className="text-3xl font-bold">Idea Master</a>
+        <button className="btn" onClick={signOut}>Sign out</button>
+      </nav>
 
-      <div className="flex flex-grow justify-center items-center bg-neutral">
-        <div className="card card-compact w-full max-w-lg bg-base-100 shadow-xl">
+      <div className="flex flex-grow justify-center items-center bg-black">
+        <div className="card card-compact w-full max-w-lg bg-transparent shadow-xl">
           <div className="card-body items-stretch text-center">
-            <h1 className="card-title self-center text-2xl font-bold mb-4">Idea Master</h1>
-            <div className="form-control w-full">
-              <div className="join">
+            <h1 className="card-title self-center text-4xl font-bold mb-4 text-white">Idea Master</h1>
+            <div className="form-control w-full mb-4">
+              <div className="join flex items-center rounded-md">
                 <input
                   type="text"
                   placeholder="Add your thoughts..."
-                  className="join-item flex-grow input input-bordered input-md input-primary"
+                  className="join-item flex-grow input input-bordered input-md input-primary text-white bg-transparent border-white border rounded-md mr-2"
                   value={newProductText}
                   onChange={(e) => setNewProductText(e.target.value)}
                 />
-                <button className="join-item btn btn-square btn-md btn-primary" onClick={handleAddProduct}>
+                <button className="join-item btn btn-square btn-md btn-primary border rounded-md" onClick={handleAddProduct}>
                   Add
                 </button>
               </div>
             </div>
-            <div className="form-control w-full flex flex-row justify-center items-center">
-              <label className="join-item label">Submit directly</label>
-              <input type="checkbox" className="toggle mx-2" checked={pushToKafka} onChange={() => setPushToKafka(!pushToKafka)} />
-              <label className="join-item label">Submit via Kafka</label>
-            </div>
-            <Heading size="md" mb={4}>
-              Group thoughts
-            </Heading>
+            <h2 className="text-white text-left text-xl mt-4 mb-2">Thoughts List</h2>
             <div className="space-y-2 w-full">
             {data.products.length > 0 ? (
               <div className="space-y-2 w-full">
                 {data.products.map(({ name, id }: Product) => (
-                  <div key={id} className="card card-compact w-full bg-base-200 flex-row items-center justify-between">
+                  <div key={id} className="card card-compact w-full bg-transparent border border-white flex-row items-center justify-between">
                     <div className="card-body">
                       <div className="flex justify-between items-center w-full">
-                        <span>{name}</span>
+                        <span className="text-white">{name}</span>
                         <button className="btn btn-xs btn-circle btn-error" onClick={() => handleRemoveProduct(id)}>
                           x
                         </button>
@@ -152,13 +118,13 @@ const HomePage: React.FC = () => {
                 ))}
               </div>
             ) : (
-              <div>No products available</div>
+              <div className="text-white text-left">No thoughts added</div>
             )}
           </div>
-            <button className="btn btn-primary" onClick={generateIdea}>
+            <button className="btn btn-primary mt-4" onClick={generateIdea}>
             Generate a Brilliant Idea
           </button>
-          <Text className="card-body">{generatedIdea}</Text>
+          <div className="text-white mt-2">{generatedIdea}</div>
           </div>
         </div>
       </div>
