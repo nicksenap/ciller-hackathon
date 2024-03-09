@@ -48,6 +48,14 @@ class Mutation:
     @strawberry.field(permission_classes=[IsAuthenticated])
     async def remove_product(self, id: str) -> None:
         db.delete_product(id)
+    
+    @strawberry.field(permission_classes=[IsAuthenticated])
+    async def add_idea_space(self, type: str, space_id: int, final_idea: str) -> db.IdeaSpace:
+        return db.create_idea_space(type, space_id, final_idea)
+    
+    @strawberry.field(permission_classes=[IsAuthenticated])
+    async def add_idea_input(self, type: str, input_id: int, space_id: int, input: str, user_tag: str) -> db.IdeaInput:
+        return db.create_idea_input(type, input_id, space_id, input, user_tag)
 
 #### Queries ####
 
@@ -56,6 +64,14 @@ class Query:
     @strawberry.field
     def products(self) -> list[db.Product]:
         return db.list_products()
+    def idea_spaces(self) -> list[db.IdeaSpace]:
+        return db.list_idea_spaces()
+    def idea_inputs(self) -> list[db.IdeaInput]:
+        return db.list_idea_inputs()
+    def idea_space(self, space_id: int) -> db.IdeaSpace | None:
+        return db.get_idea_space(space_id)
+    def idea_input(self, input_id: int) -> db.IdeaInput | None:
+        return db.get_idea_input(input_id)
 
 #### Subscriptions ####
 
