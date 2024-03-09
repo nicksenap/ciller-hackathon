@@ -87,6 +87,10 @@ const HomePage: React.FC = () => {
     });
   };
 
+  function generateSolutionFromIdeas(event: any): void {
+    throw new Error('Function not implemented.');
+  }
+
   return (
     <div className="min-h-screen flex flex-col">
       <div className="navbar bg-base-300 text-neutral-content">
@@ -103,12 +107,12 @@ const HomePage: React.FC = () => {
       <div className="flex flex-grow justify-center items-center bg-neutral">
         <div className="card card-compact w-full max-w-lg bg-base-100 shadow-xl">
           <div className="card-body items-stretch text-center">
-            <h1 className="card-title self-center text-2xl font-bold mb-4">Product List</h1>
+            <h1 className="card-title self-center text-2xl font-bold mb-4">Idea Master</h1>
             <div className="form-control w-full">
               <div className="join">
                 <input
                   type="text"
-                  placeholder="Add new product..."
+                  placeholder="Add new ideas...🌝"
                   className="join-item flex-grow input input-bordered input-md input-primary"
                   value={newProductText}
                   onChange={(e) => setNewProductText(e.target.value)}
@@ -117,11 +121,6 @@ const HomePage: React.FC = () => {
                   Add
                 </button>
               </div>
-            </div>
-            <div className="form-control w-full flex flex-row justify-center items-center">
-              <label className="join-item label">Submit directly</label>
-              <input type="checkbox" className="toggle mx-2" checked={pushToKafka} onChange={() => setPushToKafka(!pushToKafka)} />
-              <label className="join-item label">Submit via Kafka</label>
             </div>
             <div className="space-y-2 w-full">
               {data.products.map(({ name, id }: Product) => (
@@ -136,6 +135,14 @@ const HomePage: React.FC = () => {
                   </div>
                 </div>
               ))}
+            </div>
+            <div className="form-control">
+              <button
+                className="btn btn-primary"
+                onClick={generateSolutionFromIdeas}
+              >
+                Generate Solution from Ideas
+              </button>
             </div>
           </div>
         </div>

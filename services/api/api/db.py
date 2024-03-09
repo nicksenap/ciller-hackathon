@@ -101,6 +101,13 @@ def get_idea_inputs() -> list[IdeaSpace]:
     )
     return [IdeaInput(**r) for r in result]
 
+def get_idea_inputs_by_space_id(space_id: str) -> list[IdeaInput]:
+    result = cb.exec(
+        env.get_couchbase_conf(),
+        f"SELECT type, input_id, ts, space_id, input, user_tag FROM {env.get_couchbase_bucket()}._default._default WHERE space_id='{space_id}' AND type = 'idea_input' ORDER BY ts DESC"
+    )
+    return [IdeaInput(**r) for r in result]
+
 def get_idea_space(space_id: str) -> IdeaSpace | None:
     # Fetch all idea spaces and then filter by space_id
     all_idea_spaces = get_idea_spaces()  # Assuming this function works correctly

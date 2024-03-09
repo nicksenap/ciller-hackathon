@@ -8,7 +8,7 @@ from strawberry.types import Info as _Info
 from strawberry.types.info import RootValueType
 import logging
 
-from . import auth, db
+from . import auth, db, gpt
 
 logger = logging.getLogger(__name__)
 
@@ -80,6 +80,12 @@ class Query:
     @strawberry.field
     def idea_input(self, input_id: str) -> db.IdeaInput | None:
         return db.get_idea_input(input_id)
+    @strawberry.field
+    def get_idea_inputs_by_space_id(self, space_id: str) -> list[db.IdeaInput]:
+        return db.get_idea_inputs_by_space_id(space_id)
+    @strawberry.field
+    def generate_solution(self, space_id: str) -> db.IdeaSpace:
+        return gpt.generate_solution(space_id)
 
 #### Subscriptions ####
 
