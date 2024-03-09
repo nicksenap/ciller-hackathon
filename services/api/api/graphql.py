@@ -84,7 +84,7 @@ class Query:
     def get_idea_inputs_by_space_id(self, space_id: str) -> list[db.IdeaInput]:
         return db.get_idea_inputs_by_space_id(space_id)
     @strawberry.field
-    def generate_solution(self, space_id: str) -> db.IdeaSpace:
+    def generate_solution(self, space_id: str) -> db.GPTOutput:
         return gpt.generate_solution(space_id)
 
 #### Subscriptions ####

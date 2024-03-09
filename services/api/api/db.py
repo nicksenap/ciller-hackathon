@@ -24,6 +24,10 @@ class IdeaInput:
     input: str
     user_tag: str
 
+@strawberry.type
+class GPTOutput:
+    output: str
+
 
 def create_product(name: str) -> Product:
     id = str(uuid.uuid1())
